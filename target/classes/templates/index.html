@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌾 Farm Finance Management</title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9edf5 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px rgba(26, 26, 46, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .header h1 {
+            font-size: 38px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff6b9d, #ff2e63);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header p {
+            font-size: 16px;
+            opacity: 0.8;
+            margin-top: 8px;
+            color: #a8d8ea;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+        .header .subtitle {
+            color: #ff6b9d;
+            font-weight: 600;
+        }
+
+        /* ===== MENU ===== */
+        .menu {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+        .menu a {
+            padding: 12px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            border: 2px solid transparent;
+        }
+        .menu .home { background: #1a1a2e; color: white; }
+        .menu .home:hover { background: #0f3460; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(26, 26, 46, 0.3); }
+
+        .menu .income { background: linear-gradient(135deg, #ff6b9d, #ff2e63); color: white; }
+        .menu .income:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 46, 99, 0.4); }
+
+        .menu .expense { background: linear-gradient(135deg, #4facfe, #00f2fe); color: white; }
+        .menu .expense:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4); }
+
+        .menu .report { background: linear-gradient(135deg, #a18cd1, #fbc2eb); color: #1a1a2e; }
+        .menu .report:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(161, 140, 209, 0.4); }
+
+        .menu .clear { background: #2d3436; color: white; }
+        .menu .clear:hover { background: #1a1a2e; transform: translateY(-2px); }
+
+        /* ===== SUMMARY CARDS ===== */
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        .summary-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            text-align: center;
+            transition: all 0.3s ease;
+            border-left: 4px solid #1a1a2e;
+        }
+        .summary-card:hover { transform: translateY(-5px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+        .summary-card .label { font-size: 13px; color: #888; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .summary-card .value { font-size: 28px; font-weight: 800; margin-top: 8px; }
+        .summary-card .value.income { color: #ff2e63; }
+        .summary-card .value.expense { color: #4facfe; }
+        .summary-card .value.profit { color: #00b894; }
+        .summary-card .value.loss { color: #e17055; }
+        .summary-card:nth-child(1) { border-left-color: #ff2e63; }
+        .summary-card:nth-child(2) { border-left-color: #4facfe; }
+        .summary-card:nth-child(3) { border-left-color: #00b894; }
+        .summary-card:nth-child(4) { border-left-color: #a18cd1; }
+
+        /* ===== CARDS ===== */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: all 0.3s ease;
+        }
+        .card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+        .card h2 {
+            font-size: 20px;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card h2.income-title { color: #ff2e63; border-color: #ff6b9d; }
+        .card h2.expense-title { color: #4facfe; border-color: #00f2fe; }
+        .card h2.report-title { color: #6c5ce7; border-color: #a18cd1; }
+
+        /* ===== TABLE ===== */
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th {
+            background: #1a1a2e;
+            color: white;
+            padding: 14px 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        td { padding: 12px; border-bottom: 1px solid #f0f0f0; }
+        tr:hover { background: #f8f9fa; }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-block;
+        }
+        .delete-btn:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(238, 90, 36, 0.4); }
+
+        .empty-msg { color: #999; font-style: italic; text-align: center; padding: 30px; }
+
+        /* ===== FILTER SECTION ===== */
+        .filter-section {
+            background: linear-gradient(135deg, #f8f9fa, #e9edf5);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        .filter-grid {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: end;
+        }
+        .filter-group { display: flex; flex-direction: column; }
+        .filter-group label { font-size: 12px; font-weight: 600; color: #555; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .filter-group input {
+            padding: 10px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: 0.3s;
+            width: 150px;
+        }
+        .filter-group input:focus { border-color: #a18cd1; outline: none; box-shadow: 0 0 0 3px rgba(161, 140, 209, 0.2); }
+        .filter-btn {
+            padding: 10px 28px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+        .filter-btn.primary { background: linear-gradient(135deg, #a18cd1, #fbc2eb); color: #1a1a2e; }
+        .filter-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(161, 140, 209, 0.4); }
+        .filter-btn.secondary { background: #2d3436; color: white; }
+        .filter-btn.secondary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(45, 52, 54, 0.3); }
+
+        .filter-message {
+            background: linear-gradient(135deg, #ff6b9d, #ff2e63);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 12px;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 13px;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 30px;
+        }
+        .footer .heart { color: #ff2e63; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 26px; }
+            .menu a { padding: 10px 18px; font-size: 12px; }
+            .summary { grid-template-columns: 1fr 1fr; }
+            .summary-card .value { font-size: 22px; }
+            .filter-grid { flex-direction: column; }
+            .filter-group input { width: 100%; }
+        }
+        @media (max-width: 480px) {
+            .summary { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- ===== HEADER ===== -->
+    <div class="header">
+        <h1>🌾 Farm Finance Management</h1>
+        <p>Track <span class="subtitle">Income</span> · <span class="subtitle">Expenses</span> · <span class="subtitle">Profit</span> with ease</p>
+    </div>
+
+    <!-- ===== MENU ===== -->
+    <div class="menu">
+        <a href="/" class="home">🏠 Home</a>
+        <a href="/add-income" class="income">💰 Add Income</a>
+        <a href="/add-expense" class="expense">💸 Add Expense</a>
+        <a href="/" class="report">📊 Reports</a>
+        <a href="/" class="clear">🔄 Clear Filter</a>
+    </div>
+
+    <!-- ===== SUMMARY ===== -->
+    <div class="summary">
+        <div class="summary-card">
+            <div class="label">💰 Total Income</div>
+            <div class="value income">₹<span th:text="${totalIncome}"></span></div>
+        </div>
+        <div class="summary-card">
+            <div class="label">💸 Total Expense</div>
+            <div class="value expense">₹<span th:text="${totalExpense}"></span></div>
+        </div>
+        <div class="summary-card">
+            <div class="label">📈 Profit / Loss</div>
+            <div class="value" th:class="${profit >= 0} ? 'profit' : 'loss'">
+                <span th:if="${profit >= 0}">✅ ₹<span th:text="${profit}"></span></span>
+                <span th:unless="${profit >= 0}">❌ ₹<span th:text="${profit}"></span></span>
+            </div>
+        </div>
+        <div class="summary-card">
+            <div class="label">📋 Total Records</div>
+            <div class="value profit"><span th:text="${incomes.size() + expenses.size()}"></span></div>
+        </div>
+    </div>
+
+    <!-- ===== INCOME TABLE ===== -->
+    <div class="card">
+        <h2 class="income-title">💰 Income Records</h2>
+        <div class="table-wrapper">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Crop</th>
+                    <th>Quantity</th>
+                    <th>Price/Kg</th>
+                    <th>Total</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+                <tr th:each="income : ${incomes}">
+                    <td th:text="${income.id}"></td>
+                    <td th:text="${income.cropName}"></td>
+                    <td th:text="${income.quantity}"></td>
+                    <td th:text="${income.pricePerKg}"></td>
+                    <td th:text="${income.totalIncome}"></td>
+                    <td th:text="${income.date}"></td>
+                    <td>
+                        <a th:href="@{/delete-income/{id}(id=${income.id})}"
+                           class="delete-btn"
+                           onclick="return confirm('Delete this income record?')">🗑️ Delete</a>
+                    </td>
+                </tr>
+            </table>
+            <div class="empty-msg" th:if="${incomes.isEmpty()}">No income records yet. Add one above! 💰</div>
+        </div>
+    </div>
+
+    <!-- ===== EXPENSE TABLE ===== -->
+    <div class="card">
+        <h2 class="expense-title">💸 Expense Records</h2>
+        <div class="table-wrapper">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Labour</th>
+                    <th>Work</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+                <tr th:each="expense : ${expenses}">
+                    <td th:text="${expense.id}"></td>
+                    <td th:text="${expense.labourName}"></td>
+                    <td th:text="${expense.workDone}"></td>
+                    <td th:text="${expense.amount}"></td>
+                    <td th:text="${expense.date}"></td>
+                    <td>
+                        <a th:href="@{/delete-expense/{id}(id=${expense.id})}"
+                           class="delete-btn"
+                           onclick="return confirm('Delete this expense record?')">🗑️ Delete</a>
+                    </td>
+                </tr>
+            </table>
+            <div class="empty-msg" th:if="${expenses.isEmpty()}">No expense records yet. Add one above! 💸</div>
+        </div>
+    </div>
+
+    <!-- ===== MONTHLY & WEEKLY FILTER ===== -->
+    <div class="card">
+        <h2 class="report-title">📊 Monthly & Weekly Reports</h2>
+
+        <!-- Filter Message -->
+        <div th:if="${filterMessage}" class="filter-message" th:text="${filterMessage}"></div>
+
+        <div class="filter-section">
+            <div class="filter-grid">
+                <!-- Monthly Filter -->
+                <div class="filter-group">
+                    <label>📅 Month (MM)</label>
+                    <input type="number" id="month" placeholder="e.g., 08" min="1" max="12">
+                </div>
+                <div class="filter-group">
+                    <label>📅 Year (YYYY)</label>
+                    <input type="number" id="year" placeholder="e.g., 2026" value="2026">
+                </div>
+                <button class="filter-btn primary" onclick="filterByMonth()">🔍 Show Month</button>
+
+                <!-- Weekly Filter -->
+                <div class="filter-group">
+                    <label>📊 Week (1-52)</label>
+                    <input type="number" id="week" placeholder="e.g., 32" min="1" max="52">
+                </div>
+                <div class="filter-group">
+                    <label>📅 Year (YYYY)</label>
+                    <input type="number" id="weekYear" placeholder="e.g., 2026" value="2026">
+                </div>
+                <button class="filter-btn primary" onclick="filterByWeek()">🔍 Show Week</button>
+
+                <button class="filter-btn secondary" onclick="clearFilter()">🔄 Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <div class="footer">
+        <p>🌾 Farm Finance Management System v2.0 | Built with <span class="heart">❤️</span> for Farmers</p>
+    </div>
+</div>
+
+<script>
+    function filterByMonth() {
+        var month = document.getElementById('month').value;
+        var year = document.getElementById('year').value;
+        if(month && year) {
+            window.location.href = '/filter/month?month=' + month + '&year=' + year;
+        } else {
+            alert('Please enter both Month and Year');
+        }
+    }
+
+    function filterByWeek() {
+        var week = document.getElementById('week').value;
+        var year = document.getElementById('weekYear').value;
+        if(week && year) {
+            window.location.href = '/filter/week?week=' + week + '&year=' + year;
+        } else {
+            alert('Please enter both Week Number and Year');
+        }
+    }
+
+    function clearFilter() {
+        window.location.href = '/';
+    }
+</script>
+</body>
+</html>
