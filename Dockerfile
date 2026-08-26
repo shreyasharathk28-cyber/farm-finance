@@ -12,7 +12,7 @@ COPY src ./src
 # Build the application
 RUN mvn clean package -DskipTests
 
-# Run the application
+# Run the application - using the actual JAR name
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "target/*.jar"]
+ENTRYPOINT ["java", "-jar", "target/farm-finance-0.0.1-SNAPSHOT.jar"]
