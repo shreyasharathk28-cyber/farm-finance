@@ -40,11 +40,11 @@
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 
-		<!-- PostgreSQL Driver (ONLY - NO MySQL!) -->
+		<!-- MySQL Driver -->
 		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<version>8.0.33</version>
 		</dependency>
 
 		<!-- Spring Test -->
@@ -54,14 +54,14 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- OpenPDF - For PDF Reports -->
+		<!-- OpenPDF - PDF Reports -->
 		<dependency>
 			<groupId>com.github.librepdf</groupId>
 			<artifactId>openpdf</artifactId>
 			<version>1.3.30</version>
 		</dependency>
 
-		<!-- Spring Boot Mail - For Email Notifications -->
+		<!-- Spring Mail - Notifications -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
