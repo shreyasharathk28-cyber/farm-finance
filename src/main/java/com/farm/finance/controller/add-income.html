@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 Add Income</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9edf5 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 32px;
+            background: linear-gradient(135deg, #ff6b9d, #ff2e63);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header p {
+            color: #888;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #1a1a2e;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        .form-group input:focus {
+            border-color: #ff6b9d;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(255, 107, 157, 0.15);
+            background: white;
+        }
+        .btn-save {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #ff6b9d, #ff2e63);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 46, 99, 0.35);
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #888;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        .back-link:hover { color: #ff2e63; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>💰 Add Income</h1>
+        <p>Enter the details of your crop sale</p>
+    </div>
+
+    <form action="/save-income" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label>🌾 Crop Name</label>
+            <input type="text" name="cropName" placeholder="e.g., Coconut" required>
+        </div>
+
+        <div class="form-group">
+            <label>⚖️ Quantity (Kg)</label>
+            <input type="number" name="quantity" step="0.01" placeholder="e.g., 500" required>
+        </div>
+
+        <div class="form-group">
+            <label>💰 Price per Kg (₹)</label>
+            <input type="number" name="pricePerKg" step="0.01" placeholder="e.g., 30" required>
+        </div>
+
+        <div class="form-group">
+            <label>📅 Date</label>
+            <input type="date" name="date" required>
+        </div>
+
+        <!-- ===== PHOTO UPLOAD (NEW!) ===== -->
+        <div class="form-group">
+            <label>📸 Photo (Optional)</label>
+            <input type="file" name="photo" accept="image/*">
+        </div>
+
+        <button type="submit" class="btn-save">💾 Save Income</button>
+    </form>
+
+    <a href="/" class="back-link">⬅ Back to Home</a>
+</div>
+</body>
+</html>

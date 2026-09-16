@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Notification</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9edf5 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+        }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { font-size: 28px; color: #1a1a2e; }
+        .header p { color: #888; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; color: #1a1a2e; margin-bottom: 6px; }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+        }
+        .form-group textarea { height: 120px; }
+        .btn-send {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #6c5ce7, #a18cd1);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .btn-send:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(108, 92, 231, 0.35); }
+        .success { color: #2e7d32; background: #e8f5e9; padding: 10px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
+        .back { text-align: center; margin-top: 20px; }
+        .back a { color: #6c5ce7; text-decoration: none; }
+        .quick-actions { margin: 20px 0; }
+        .quick-actions a {
+            display: inline-block;
+            margin: 5px;
+            padding: 10px 18px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #1a1a2e;
+            font-size: 14px;
+        }
+        .quick-actions a:hover { background: #e0e0e0; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🔔 Send Notification</h1>
+        <p>Send email alerts to your parents</p>
+    </div>
+
+    <div th:if="${success}" class="success" th:text="${success}"></div>
+
+    <div class="quick-actions">
+        <a href="/send-budget-alert">🚨 Budget Alert</a>
+        <a href="/send-weekly-summary">📊 Weekly Summary</a>
+    </div>
+
+    <form action="/send-notification" method="post">
+        <div class="form-group">
+            <label>📧 Email</label>
+            <input type="email" name="email" placeholder="Enter email address" required>
+        </div>
+
+        <div class="form-group">
+            <label>📝 Subject</label>
+            <input type="text" name="subject" placeholder="Enter subject" required>
+        </div>
+
+        <div class="form-group">
+            <label>💬 Message</label>
+            <textarea name="message" placeholder="Type your message here..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn-send">📤 Send Notification</button>
+    </form>
+
+    <div class="back">
+        <a href="/">← Back to Home</a>
+    </div>
+</div>
+</body>
+</html>

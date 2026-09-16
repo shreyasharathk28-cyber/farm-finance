@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 Budget Check</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9edf5 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+        }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { font-size: 28px; color: #1a1a2e; }
+        .header p { color: #888; }
+        .card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+        .card .label { font-size: 14px; color: #888; }
+        .card .value { font-size: 24px; font-weight: 700; margin-top: 5px; }
+        .card .value.green { color: #2e7d32; }
+        .card .value.red { color: #ff2e63; }
+        .card .value.orange { color: #ff9800; }
+        .status-box {
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 15px 0;
+        }
+        .status-box.success { background: #e8f5e9; color: #2e7d32; }
+        .status-box.danger { background: #ffebee; color: #c62828; }
+        .status-box.warning { background: #fff3e0; color: #e65100; }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #4facfe;
+            text-decoration: none;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .btn:hover { background: #388E3C; }
+        .btn-red { background: #ff2e63; }
+        .btn-red:hover { background: #c62828; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>💰 Monthly Budget</h1>
+        <p>Check your monthly spending</p>
+    </div>
+
+    <div class="card">
+        <div class="label">📊 Budget</div>
+        <div class="value green">₹<span th:text="${monthlyBudget}"></span></div>
+    </div>
+
+    <div class="card">
+        <div class="label">💸 This Month's Expense</div>
+        <div class="value" th:class="${budgetExceeded} ? 'red' : 'green'">
+            ₹<span th:text="${monthlyExpense}"></span>
+        </div>
+    </div>
+
+    <div th:if="${budgetExceeded}" class="status-box danger">
+        <div style="font-size: 20px;">🚨</div>
+        <div style="font-weight: 600; margin-top: 5px;">Budget Exceeded!</div>
+        <div>You have exceeded the budget by ₹<span th:text="${exceededAmount}"></span></div>
+        <div style="font-size: 12px; margin-top: 5px; color: #666;">
+            An alert has been sent to your email.
+        </div>
+    </div>
+
+    <div th:unless="${budgetExceeded}" class="status-box success">
+        <div style="font-size: 20px;">✅</div>
+        <div style="font-weight: 600; margin-top: 5px;">Within Budget!</div>
+        <div>You have ₹<span th:text="${monthlyBudget - monthlyExpense}"></span> remaining</div>
+    </div>
+
+    <a th:href="@{/send-budget-alert}" class="btn" style="display: block; text-align: center; text-decoration: none;">
+        📧 Send Budget Alert
+    </a>
+
+    <a href="/" class="back-link">⬅ Back to Home</a>
+</div>
+</body>
+</html>
